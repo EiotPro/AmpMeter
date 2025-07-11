@@ -1,0 +1,46 @@
+#!/bin/sh
+
+echo "Running pre-commit checks..."
+
+# Ensure directories exist
+mkdir -p .git/hooks
+
+# Check for duplicate UI components in wrong locations
+echo "Checking for duplicate UI components..."
+UI_FILES_IN_ROOT=$(find app/src/main/java/com/example/ampmeter/ui -name "*.kt" 2>/dev/null | wc -l)
+if [ "$UI_FILES_IN_ROOT" -gt 0 ]; then
+    echo "Error: Found UI components in app/src/main/java/com/example/ampmeter/ui directory."
+    echo "UI components should be in the presentation package. See docs/MaintenanceGuidelines.md"
+    exit 1
+fi
+
+# Run lint checks
+echo "Running lint checks..."
+./gradlew lint --daemon
+
+if [ $? -ne 0 ]; then
+    echo "Lint checks failed. Please fix the issues before committing."
+    echo "See the report at app/build/reports/lint-results.html"
+    exit 1
+fi
+
+# Check navigation setup
+echo "Checking Navigation Component setup..."
+NAV_HOST_COUNT=$(grep -r "android:name=\"androidx.navigation.fragment.NavHostFragment\"" app/src/main/res/layout/ | wc -l)
+NAV_GRAPH_COUNT=$(grep -r "app:navGraph=\"@navigation/" app/src/main/res/layout/ | wc -l)
+
+if [ "$NAV_HOST_COUNT" -eq 0 ]; then
+    echo "Warning: NavHostFragment not found in layout files!"
+    echo "Navigation may not work correctly."
+    exit 1
+fi
+
+if [ "$NAV_GRAPH_COUNT" -eq 0 ]; then
+    echo "Warning: No navGraph attribute found in layout files!"
+    echo "Navigation may not work correctly."
+    exit 1
+fi
+
+# Success
+echo "Pre-commit checks passed!"
+exit 0 

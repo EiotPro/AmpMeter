@@ -81,6 +81,16 @@ app/src/main/java/com/example/ampmeter/
 
 For detailed information on the architecture, see [Clean Architecture Guide](docs/CleanArchitecture.md).
 
+### Maintenance Guidelines
+
+To ensure code quality and maintain clean project structure, all contributors should follow the [Maintenance Guidelines](docs/MaintenanceGuidelines.md). These guidelines cover:
+
+- Project structure and package organization
+- Code cleanliness and best practices
+- Proper navigation setup
+- Regular cleanup tasks to prevent technical debt
+- Common issues to watch for and avoid
+
 ## API Integration
 
 - [ChirpStack Integration Guide](docs/ChirpStackIntegration.md)
