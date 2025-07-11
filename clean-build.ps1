@@ -1,8 +1,8 @@
 #!/usr/bin/env pwsh
 
-# Script to clean build directories and free up disk space before building
+# Script to clean build directories and rebuild the project
 
-Write-Host "Cleaning build directories to free up disk space..."
+Write-Host "Cleaning build directories..."
 
 # Remove build directories
 if (Test-Path -Path "build") {
@@ -15,6 +15,6 @@ if (Test-Path -Path "app/build") {
     Write-Host "Removed app build directory"
 }
 
-# Run the Gradle command with minimal options
-Write-Host "Running minimal Gradle build..."
-.\gradlew assembleDebug --no-daemon --rerun-tasks -x lint -x test -x packageDebug 
+# Run the Gradle command
+Write-Host "Running Gradle assembleDebug..."
+.\gradlew assembleDebug --no-daemon 

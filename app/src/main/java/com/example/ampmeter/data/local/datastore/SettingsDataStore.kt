@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -96,6 +97,6 @@ class SettingsDataStore @Inject constructor(
      * Get a string value synchronously (for use in API initialization).
      */
     suspend fun getStringSynchronously(key: Preferences.Key<String>, defaultValue: String = ""): String {
-        return getString(key, defaultValue).map { it }.firstOrNull() ?: defaultValue
+        return getString(key, defaultValue).first()
     }
 } 
