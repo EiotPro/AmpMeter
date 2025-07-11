@@ -1,6 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AmpMeter</string>
-    <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_logs">Logs</string>
+    <string name="title_settings">Settings</string>
+    
+    <!-- Dashboard -->
+    <string name="current">Current</string>
+    <string name="voltage">Voltage</string>
+    <string name="battery">Battery</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    <string name="unknown">Unknown</string>
+    <string name="last_updated_format">Last updated: %s</string>
+    <string name="just_now">Just now</string>
+    <string name="minutes_ago_format">%d minutes ago</string>
+    <string name="minute_ago">1 minute ago</string>
+    <string name="hours_ago_format">%d hours ago</string>
+    <string name="hour_ago">1 hour ago</string>
+    <string name="no_data_available">No data available</string>
+    <string name="error_device_id_not_set">Device ID not set. Please configure in settings.</string>
+    <string name="error_network">Network error. Showing cached data.</string>
+    
+    <!-- Logs -->
+    <string name="no_logs_found">No logs found</string>
+    <string name="search_logs">Search logs</string>
+    <string name="export">Export</string>
+    <string name="filter">Filter</string>
+    
+    <!-- Settings -->
+    <string name="chirpstack_settings">ChirpStack Settings</string>
+    <string name="server_url">Server URL</string>
+    <string name="api_key">API Key</string>
+    <string name="device_id">Device EUI</string>
+    <string name="application_id">Application ID</string>
+    <string name="supabase_settings">Supabase Settings</string>
+    <string name="project_url">Project URL</string>
+    <string name="table_name">Table Name</string>
+    <string name="app_preferences">App Preferences</string>
+    <string name="refresh_interval">Refresh Interval</string>
+    <string name="data_retention">Data Retention</string>
+    <string name="theme">Theme</string>
+    <string name="notifications">Notifications</string>
+    <string name="device_settings">Device Settings</string>
+    <string name="device_name">Device Name</string>
+    <string name="alert_threshold">Alert Threshold</string>
+    <string name="save">Save</string>
+    <string name="seconds_format">%d seconds</string>
+    <string name="days_format">%d days</string>
 </resources>
