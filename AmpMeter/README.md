@@ -91,6 +91,8 @@ To ensure code quality and maintain clean project structure, all contributors sh
 - Regular cleanup tasks to prevent technical debt
 - Common issues to watch for and avoid
 
+To assist with maintaining code quality, several automated scripts are available. See [Maintenance Scripts](docs/MaintenanceScripts.md) for details on using these tools.
+
 ## API Integration
 
 - [ChirpStack Integration Guide](docs/ChirpStackIntegration.md)
