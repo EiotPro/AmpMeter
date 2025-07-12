@@ -2,6 +2,15 @@
 
 AmpMeter is an Android application designed to monitor current sensor readings from IoT devices using LoRaWAN and ChirpStack. The app provides real-time monitoring, historical data logging, and comprehensive configuration options.
 
+## Current Status
+
+- ✅ Basic UI implementation with three main screens: Dashboard, Logs, and Settings
+- ✅ Settings screen fully functional with device configuration options
+- ✅ Navigation between screens working properly
+- ✅ Data models and repositories implemented
+- ⏳ Dashboard screen shows placeholder data until connected to ChirpStack server
+- ⏳ Logs screen shows "No readings available" until data is received
+
 ## Features
 
 - **Real-time Current Monitoring**: Display live current readings with auto-refresh
@@ -59,34 +68,31 @@ Before running the app, you need to configure:
 2. **Device ID**: Configure the device EUI in the Settings screen
 3. **Refresh Interval**: Set how often the app should fetch new data
 
-## Development Workflow
+## Next Steps for Development
 
-### Adding New Features
+1. **Connect to ChirpStack Server**:
+   - Implement API connection with the provided server URL and API key
+   - Test connection and fetch real device data
 
-1. Create domain models in the `domain/model` package
-2. Implement repository interfaces in the `domain/repository` package
-3. Create use cases in the `domain/usecase` package
-4. Implement repositories in the `data/repository` package
-5. Create UI components in the `presentation/ui` package
+2. **Enhance Dashboard Display**:
+   - Show real-time current readings from the device
+   - Implement proper error handling for connection issues
+   - Add visual indicators for values outside normal ranges
 
-### Coding Standards
+3. **Populate Logs Screen**:
+   - Fetch and display historical readings
+   - Implement pagination for large datasets
+   - Add filtering and sorting options
 
-- Follow Kotlin coding conventions
-- Use meaningful variable and function names
-- Add documentation comments for public APIs
-- Write unit tests for business logic
+4. **Implement Data Synchronization**:
+   - Set up Supabase integration for cloud storage
+   - Create background sync service
+   - Add offline support with local caching
 
-### Testing
-
-Run unit tests:
-```bash
-./gradlew test
-```
-
-Run instrumented tests:
-```bash
-./gradlew connectedAndroidTest
-```
+5. **Add Notifications**:
+   - Implement alert system for readings outside thresholds
+   - Create notification channels for different alert types
+   - Add background monitoring service
 
 ## Maintenance
 
@@ -110,8 +116,4 @@ For details on the implementation approach, see [Implementation Plan](AmpMeter/d
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
+Contributions are welcome! Please feel free to submit a Pull Request. 

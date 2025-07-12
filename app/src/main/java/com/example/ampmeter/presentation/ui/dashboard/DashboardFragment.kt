@@ -14,6 +14,7 @@ import com.example.ampmeter.R
 import com.example.ampmeter.databinding.FragmentDashboardBinding
 import com.example.ampmeter.domain.model.ConnectionStatus
 import com.example.ampmeter.domain.model.DeviceReading
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,6 +30,8 @@ class DashboardFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: DashboardViewModel by viewModels()
+    
+    private var alertSnackbar: Snackbar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,6 +73,13 @@ class DashboardFragment : Fragment() {
                     binding.textError.apply {
                         visibility = if (state.error != null) View.VISIBLE else View.GONE
                         text = state.error
+                    }
+                    
+                    // Handle alert state
+                    if (state.alert != null) {
+                        showAlert(state.alert)
+                    } else {
+                        dismissAlert()
                     }
                 }
             }
@@ -143,10 +153,45 @@ class DashboardFragment : Fragment() {
         // Format battery percentage
         val batteryText = String.format("%d%%", reading.batteryLevel)
         binding.textBatteryValue.text = batteryText
+        
+        // Set color for current value based on threshold
+        try {
+            val threshold = 20.0 // This would come from settings in a real app
+            if (reading.current > threshold) {
+                binding.textCurrentValue.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.red)
+                )
+            } else {
+                binding.textCurrentValue.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.black)
+                )
+            }
+        } catch (e: Exception) {
+            // Fallback to default color if there's an error
+        }
+    }
+    
+    private fun showAlert(message: String) {
+        alertSnackbar?.dismiss()
+        alertSnackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_INDEFINITE)
+            .setAction("Dismiss") {
+                viewModel.clearAlert()
+            }
+            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.red))
+            .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        
+        alertSnackbar?.show()
+    }
+    
+    private fun dismissAlert() {
+        alertSnackbar?.dismiss()
+        alertSnackbar = null
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        dismissAlert()
         _binding = null
     }
 } 

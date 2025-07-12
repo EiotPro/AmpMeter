@@ -12,5 +12,6 @@ data class DashboardUiState(
     val connectionStatus: ConnectionStatus = ConnectionStatus.UNKNOWN,
     val lastUpdated: Long = 0,
     val error: String? = null,
+    val alert: String? = null,
     val deviceName: String = "Current Sensor"
 ) 

@@ -2,6 +2,7 @@ package com.example.ampmeter.presentation.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ampmeter.data.remote.api.ChirpStackApi
 import com.example.ampmeter.domain.model.Resource
 import com.example.ampmeter.domain.usecase.settings.GetSettingsUseCase
 import com.example.ampmeter.domain.usecase.settings.UpdateSettingsUseCase
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val getSettingsUseCase: GetSettingsUseCase,
-    private val updateSettingsUseCase: UpdateSettingsUseCase
+    private val updateSettingsUseCase: UpdateSettingsUseCase,
+    private val chirpStackApi: ChirpStackApi
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -115,6 +117,53 @@ class SettingsViewModel @Inject constructor(
         }
     }
     
+    fun testConnection() {
+        viewModelScope.launch {
+            val deviceId = _uiState.value.deviceId
+            
+            if (deviceId.isBlank()) {
+                _uiState.update { 
+                    it.copy(
+                        isTestingConnection = false,
+                        connectionTestResult = "Device ID cannot be empty"
+                    )
+                }
+                return@launch
+            }
+            
+            _uiState.update { it.copy(isTestingConnection = true) }
+            
+            try {
+                // Try to get device info from ChirpStack
+                val response = chirpStackApi.getDeviceInfo(deviceId)
+                
+                if (response.isSuccessful && response.body() != null) {
+                    _uiState.update { 
+                        it.copy(
+                            isTestingConnection = false,
+                            connectionTestResult = "Connection successful! Device found: ${response.body()?.device?.name ?: deviceId}"
+                        )
+                    }
+                } else {
+                    _uiState.update { 
+                        it.copy(
+                            isTestingConnection = false,
+                            connectionTestResult = "Error: ${response.errorBody()?.string() ?: "Device not found or server error"}"
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Error testing connection")
+                _uiState.update { 
+                    it.copy(
+                        isTestingConnection = false,
+                        connectionTestResult = "Connection failed: ${e.message ?: "Unknown error"}"
+                    )
+                }
+            }
+        }
+    }
+    
     fun clearSaveSuccess() {
         _uiState.update { it.copy(saveSuccess = false) }
     }
@@ -123,9 +172,7 @@ class SettingsViewModel @Inject constructor(
         _uiState.update { it.copy(error = null) }
     }
     
-    fun testConnection(): Resource<Unit> {
-        // This would be implemented with actual connection testing logic
-        // For now, just return success
-        return Resource.Success(Unit)
+    fun clearConnectionTestResult() {
+        _uiState.update { it.copy(connectionTestResult = null) }
     }
 } 

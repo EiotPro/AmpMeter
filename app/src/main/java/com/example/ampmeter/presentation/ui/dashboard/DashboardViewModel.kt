@@ -71,6 +71,9 @@ class DashboardViewModel @Inject constructor(
                                 error = null
                             )
                         }
+                        
+                        // Check for threshold alerts
+                        checkThresholds(reading)
                     }
                     is Resource.Error -> {
                         _uiState.update {
@@ -139,5 +142,47 @@ class DashboardViewModel @Inject constructor(
      */
     private fun determineConnectionStatus(reading: DeviceReading?): ConnectionStatus {
         return ConnectionStatus.fromTimestamp(reading?.timestamp)
+    }
+    
+    /**
+     * Checks if readings exceed thresholds for alerts.
+     */
+    private fun checkThresholds(reading: DeviceReading?) {
+        if (reading == null) return
+        
+        viewModelScope.launch {
+            try {
+                val alertThreshold = getSettingsUseCase.getAlertThreshold()
+                
+                // Check if current exceeds threshold
+                if (reading.current > alertThreshold) {
+                    _uiState.update {
+                        it.copy(
+                            alert = "Current exceeds threshold: ${reading.current}A > ${alertThreshold}A"
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(alert = null)
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Error checking thresholds")
+            }
+        }
+    }
+    
+    /**
+     * Clears the alert message.
+     */
+    fun clearAlert() {
+        _uiState.update { it.copy(alert = null) }
+    }
+    
+    /**
+     * Clears the error message.
+     */
+    fun clearError() {
+        _uiState.update { it.copy(error = null) }
     }
 } 

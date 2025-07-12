@@ -58,4 +58,11 @@ class GetSettingsUseCase @Inject constructor(
     suspend fun getNotificationsEnabled(): Boolean {
         return settingsRepository.getNotificationsEnabled()
     }
+    
+    /**
+     * Gets the alert threshold for current values.
+     */
+    suspend fun getAlertThreshold(): Double {
+        return settingsRepository.getAlertThreshold()
+    }
 } 

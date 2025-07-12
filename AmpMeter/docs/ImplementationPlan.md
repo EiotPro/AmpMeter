@@ -2,104 +2,141 @@
 
 This document outlines the step-by-step implementation plan for completing the AmpMeter Android application.
 
-## 1. Project Setup and Configuration
+## Current Progress (Updated)
 
 - [x] Set up project structure following Clean Architecture principles
 - [x] Configure Gradle dependencies
 - [x] Set up Hilt for dependency injection
 - [x] Configure network security
-
-## 2. Data Layer Implementation
-
 - [x] Create data models and entities
 - [x] Implement Room database for local storage
 - [x] Create DAOs for database access
 - [x] Implement repository interfaces and implementations
 - [x] Set up DataStore for settings storage
 - [x] Implement ChirpStack API client
-
-## 3. Domain Layer Implementation
-
 - [x] Define domain models
 - [x] Create use cases for business logic
-- [x] Implement repository interfaces
-
-## 4. Presentation Layer Implementation
-
 - [x] Set up navigation components
 - [x] Implement Dashboard UI
 - [x] Create Dashboard ViewModel
 - [x] Implement Settings UI
-- [ ] Complete Settings ViewModel
+- [x] Create Settings ViewModel
 - [x] Implement Logs UI
-- [ ] Complete Logs ViewModel
+- [ ] Complete Logs ViewModel with pagination
 
-## 5. Features to Complete
+## Detailed Next Steps
 
-### Dashboard Screen
-- [x] Display current reading with proper formatting
-- [x] Show connection status indicator
-- [x] Implement auto-refresh functionality
-- [x] Add manual refresh via swipe-to-refresh
-- [ ] Add current threshold alerts
+### 1. Connect to ChirpStack Server (Week 1)
 
-### Settings Screen
-- [x] Device configuration (ID, name)
-- [x] ChirpStack server configuration
-- [x] App preferences (refresh interval, notifications)
-- [ ] Implement "Test Connection" functionality
-- [ ] Add validation for inputs
+#### Day 1-2: API Connection Setup
+- [ ] Test the ChirpStack API endpoint with the provided URL
+- [ ] Implement proper authentication using the API key
+- [ ] Create error handling for connection issues
+- [ ] Add logging for API requests and responses
 
-### Logs Screen
-- [x] Display historical readings in a list
+#### Day 3-4: Data Fetching
+- [ ] Implement device data fetching from ChirpStack
+- [ ] Parse and validate the response data
+- [ ] Map API responses to domain models
+- [ ] Store fetched data in local database
+
+#### Day 5: Connection Testing
+- [ ] Implement "Test Connection" functionality in Settings
+- [ ] Add visual feedback for connection status
+- [ ] Create retry mechanism for failed connections
+- [ ] Add timeout handling for API requests
+
+### 2. Enhance Dashboard Display (Week 2)
+
+#### Day 1-2: Real-time Data Display
+- [ ] Connect Dashboard ViewModel to repository
+- [ ] Update UI with real data from the device
+- [ ] Implement auto-refresh based on settings
+- [ ] Add pull-to-refresh functionality
+
+#### Day 3-4: Visual Enhancements
+- [ ] Add animations for data changes
+- [ ] Implement color indicators for value ranges
+- [ ] Create visual alerts for threshold violations
+- [ ] Add loading states and error handling
+
+#### Day 5: Dashboard Optimization
+- [ ] Optimize refresh cycle for battery efficiency
+- [ ] Implement data caching for offline viewing
+- [ ] Add timestamp display for last successful update
+- [ ] Create detailed view for sensor readings
+
+### 3. Populate Logs Screen (Week 2-3)
+
+#### Day 1-2: Data Retrieval
+- [ ] Complete LogsViewModel implementation
+- [ ] Connect to repository for historical data
+- [ ] Implement initial data loading
+- [ ] Add error handling and retry logic
+
+#### Day 3-4: Pagination and Filtering
 - [ ] Implement pagination for large datasets
-- [ ] Add filtering options
-- [ ] Implement export functionality
+- [ ] Add date range filtering
+- [ ] Create sorting options (newest/oldest first)
+- [ ] Implement search functionality
 
-### Supabase Integration
-- [ ] Set up Supabase client
-- [ ] Implement data synchronization
-- [ ] Add offline support with sync indicators
+#### Day 5: Export and Details
+- [ ] Add CSV export functionality
+- [ ] Implement detailed view for individual readings
+- [ ] Create share functionality for readings
+- [ ] Add statistics calculation for selected periods
 
-## 6. Testing Plan
+### 4. Implement Data Synchronization (Week 3-4)
+
+#### Day 1-2: Supabase Setup
+- [ ] Add Supabase client dependencies
+- [ ] Configure Supabase connection
+- [ ] Create data models for Supabase tables
+- [ ] Implement authentication if required
+
+#### Day 3-4: Sync Mechanism
+- [ ] Create synchronization service
+- [ ] Implement background sync with WorkManager
+- [ ] Add conflict resolution for offline changes
+- [ ] Create sync status indicators
+
+#### Day 5: Offline Support
+- [ ] Enhance offline capabilities
+- [ ] Implement queue for pending uploads
+- [ ] Add manual sync trigger
+- [ ] Create sync history and logs
+
+### 5. Add Notifications (Week 4)
+
+#### Day 1-2: Notification System
+- [ ] Create notification channels
+- [ ] Implement threshold monitoring
+- [ ] Add background service for monitoring
+- [ ] Create notification preferences
+
+#### Day 3-4: Alert System
+- [ ] Implement different alert types
+- [ ] Add customizable thresholds in settings
+- [ ] Create visual indicators for alerts
+- [ ] Implement alert history
+
+#### Day 5: Testing and Optimization
+- [ ] Test notifications on different Android versions
+- [ ] Optimize battery usage for background monitoring
+- [ ] Add do-not-disturb integration
+- [ ] Implement notification grouping
+
+## Testing Plan
 
 - [ ] Unit tests for use cases
 - [ ] Unit tests for repositories
 - [ ] UI tests for main screens
 - [ ] Integration tests for API communication
+- [ ] End-to-end tests for main user flows
 
-## 7. Deployment
+## Deployment
 
 - [ ] Configure ProGuard rules
 - [ ] Set up signing configuration
 - [ ] Create release build
-- [ ] Prepare for Play Store submission
-
-## Implementation Timeline
-
-1. **Week 1**: Complete Settings screen and fix Device ID configuration
-2. **Week 2**: Enhance Logs screen with filtering and export
-3. **Week 3**: Implement Supabase integration and sync
-4. **Week 4**: Testing, bug fixes, and optimization
-
-## Next Steps
-
-1. Complete the Settings screen implementation:
-   - Implement the SettingsViewModel
-   - Add validation for input fields
-   - Implement "Test Connection" functionality
-
-2. Enhance the Logs screen:
-   - Complete pagination implementation
-   - Add date range filtering
-   - Implement CSV export functionality
-
-3. Add alert notifications:
-   - Create notification channels
-   - Implement background monitoring service
-   - Add threshold configuration in settings
-
-4. Implement Supabase integration:
-   - Set up Supabase client
-   - Create sync mechanism
-   - Add conflict resolution logic 
+- [ ] Prepare for Play Store submission 

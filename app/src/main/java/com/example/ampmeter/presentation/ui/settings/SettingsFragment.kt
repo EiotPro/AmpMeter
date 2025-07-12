@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.ampmeter.databinding.FragmentSettingsBinding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -79,8 +80,8 @@ class SettingsFragment : Fragment() {
                     binding.switchNotifications.isChecked = state.notificationsEnabled
                     
                     // Handle loading state
-                    binding.buttonSave.isEnabled = !state.isLoading && !state.isSaving
-                    binding.buttonTestConnection.isEnabled = !state.isLoading && !state.isSaving
+                    binding.buttonSave.isEnabled = !state.isLoading && !state.isSaving && !state.isTestingConnection
+                    binding.buttonTestConnection.isEnabled = !state.isLoading && !state.isSaving && !state.isTestingConnection
                     
                     if (state.isLoading || state.isSaving) {
                         binding.buttonSave.text = "Saving..."
@@ -88,10 +89,22 @@ class SettingsFragment : Fragment() {
                         binding.buttonSave.text = "Save Settings"
                     }
                     
+                    if (state.isTestingConnection) {
+                        binding.buttonTestConnection.text = "Testing..."
+                    } else {
+                        binding.buttonTestConnection.text = "Test Connection"
+                    }
+                    
                     // Handle success message
                     if (state.saveSuccess) {
                         Toast.makeText(requireContext(), "Settings saved successfully", Toast.LENGTH_SHORT).show()
                         viewModel.clearSaveSuccess()
+                    }
+                    
+                    // Handle connection test result
+                    if (state.connectionTestResult != null) {
+                        showConnectionTestResult(state.connectionTestResult)
+                        viewModel.clearConnectionTestResult()
                     }
                     
                     // Handle error
@@ -133,32 +146,15 @@ class SettingsFragment : Fragment() {
     }
     
     private fun testConnection() {
-        val deviceId = binding.editDeviceId.text.toString().trim()
-        val serverUrl = binding.editServerUrl.text.toString().trim()
-        
-        if (deviceId.isEmpty() || serverUrl.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter Device ID and Server URL", Toast.LENGTH_SHORT).show()
-            return
-        }
-        
-        binding.buttonTestConnection.isEnabled = false
-        binding.buttonTestConnection.text = "Testing..."
-        
-        // Save current settings first
+        // Save settings first to ensure we're testing with the latest values
         saveSettings()
         
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                // For now, just show a success message after a delay
-                kotlinx.coroutines.delay(1500)
-                Toast.makeText(requireContext(), "Connection successful!", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Connection failed: ${e.message}", Toast.LENGTH_SHORT).show()
-            } finally {
-                binding.buttonTestConnection.isEnabled = true
-                binding.buttonTestConnection.text = "Test Connection"
-            }
-        }
+        // Then test the connection
+        viewModel.testConnection()
+    }
+    
+    private fun showConnectionTestResult(result: String) {
+        Snackbar.make(binding.root, result, Snackbar.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {

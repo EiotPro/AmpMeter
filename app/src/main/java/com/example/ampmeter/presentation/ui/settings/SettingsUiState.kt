@@ -12,6 +12,8 @@ data class SettingsUiState(
     val notificationsEnabled: Boolean = true,
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
+    val isTestingConnection: Boolean = false,
     val saveSuccess: Boolean = false,
+    val connectionTestResult: String? = null,
     val error: String? = null
 ) 

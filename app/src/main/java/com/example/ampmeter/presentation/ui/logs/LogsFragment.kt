@@ -6,20 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.ampmeter.databinding.FragmentLogsBinding
 import com.example.ampmeter.domain.model.DeviceReading
-import com.example.ampmeter.domain.usecase.device.GetDeviceReadingsUseCase
-import com.example.ampmeter.domain.usecase.settings.GetSettingsUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class LogsFragment : Fragment() {
@@ -27,15 +25,9 @@ class LogsFragment : Fragment() {
     private var _binding: FragmentLogsBinding? = null
     private val binding get() = _binding!!
     
-    @Inject
-    lateinit var getDeviceReadingsUseCase: GetDeviceReadingsUseCase
-    
-    @Inject
-    lateinit var getSettingsUseCase: GetSettingsUseCase
+    private val viewModel: LogsViewModel by viewModels()
     
     private lateinit var readingsAdapter: DeviceReadingsAdapter
-    private var currentPage = 0
-    private val pageSize = 20
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +44,7 @@ class LogsFragment : Fragment() {
         setupRecyclerView()
         setupSwipeRefresh()
         setupButtons()
-        loadReadings()
+        observeUiState()
     }
     
     private fun setupRecyclerView() {
@@ -64,13 +56,30 @@ class LogsFragment : Fragment() {
         binding.recyclerLogs.apply {
             adapter = readingsAdapter
             addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+            
+            // Add scroll listener for pagination
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                    
+                    // Load more when reaching near the end of the list
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 5
+                        && firstVisibleItemPosition >= 0) {
+                        viewModel.loadMore()
+                    }
+                }
+            })
         }
     }
     
     private fun setupSwipeRefresh() {
         binding.swipeRefresh.setOnRefreshListener {
-            currentPage = 0
-            loadReadings()
+            viewModel.refresh()
         }
     }
     
@@ -84,72 +93,51 @@ class LogsFragment : Fragment() {
         }
     }
     
-    private fun loadReadings() {
+    private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            binding.progressBar.visibility = View.VISIBLE
-            
-            try {
-                val deviceId = getSettingsUseCase.getDeviceId()
-                
-                if (deviceId.isBlank()) {
-                    showError("Device ID not set. Please configure in settings.")
-                    return@launch
-                }
-                
-                val result = getDeviceReadingsUseCase(deviceId, pageSize, currentPage * pageSize)
-                
-                result.onSuccess { readings ->
-                    if (readings.isEmpty() && currentPage == 0) {
-                        binding.textEmpty.visibility = View.VISIBLE
-                        binding.recyclerLogs.visibility = View.GONE
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collectLatest { state ->
+                    // Update loading state
+                    binding.progressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
+                    binding.swipeRefresh.isRefreshing = state.isLoading
+                    
+                    // Update readings list
+                    readingsAdapter.submitList(state.readings)
+                    
+                    // Show empty view if no readings and not loading
+                    binding.textEmpty.visibility = if (state.readings.isEmpty() && !state.isLoading) {
+                        View.VISIBLE
                     } else {
-                        binding.textEmpty.visibility = View.GONE
-                        binding.recyclerLogs.visibility = View.VISIBLE
-                        
-                        if (currentPage == 0) {
-                            readingsAdapter.submitList(readings)
-                        } else {
-                            val currentList = readingsAdapter.currentList.toMutableList()
-                            currentList.addAll(readings)
-                            readingsAdapter.submitList(currentList)
-                        }
+                        View.GONE
                     }
-                }.onError { message, _ ->
-                    showError(message)
+                    
+                    binding.recyclerLogs.visibility = if (state.readings.isNotEmpty()) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                    
+                    // Handle error
+                    if (state.error != null) {
+                        binding.textEmpty.text = state.error
+                        binding.textEmpty.visibility = View.VISIBLE
+                        Toast.makeText(requireContext(), state.error, Toast.LENGTH_SHORT).show()
+                        viewModel.clearError()
+                    } else if (state.readings.isEmpty() && !state.isLoading) {
+                        binding.textEmpty.text = "No readings available"
+                    }
                 }
-                
-            } catch (e: Exception) {
-                showError("Error loading readings: ${e.message}")
-            } finally {
-                binding.progressBar.visibility = View.GONE
-                binding.swipeRefresh.isRefreshing = false
             }
         }
     }
     
-    private fun showError(message: String) {
-        binding.textEmpty.text = message
-        binding.textEmpty.visibility = View.VISIBLE
-        binding.recyclerLogs.visibility = View.GONE
-    }
-    
     private fun showReadingDetails(reading: DeviceReading) {
-        // Format timestamp
-        val dateFormat = SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.getDefault())
-        val dateStr = dateFormat.format(Date(reading.timestamp))
-        
-        val message = """
-            Time: $dateStr
-            Current: ${reading.current} A
-            Voltage: ${reading.voltage} V
-            Battery: ${reading.batteryLevel}%
-            RSSI: ${reading.rssi ?: "N/A"}
-            SNR: ${reading.snr ?: "N/A"}
-            Frame Count: ${reading.frameCount ?: "N/A"}
-        """.trimIndent()
-        
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-        // In a real app, you'd show a dialog or navigate to a details screen
+        // In a real app, navigate to a detail screen or show a dialog
+        Toast.makeText(
+            requireContext(),
+            "Reading: ${reading.current}A at ${reading.timestamp}",
+            Toast.LENGTH_SHORT
+        ).show()
     }
     
     private fun showFilterDialog() {
