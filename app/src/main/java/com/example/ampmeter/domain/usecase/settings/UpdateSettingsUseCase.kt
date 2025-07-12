@@ -10,58 +10,58 @@ class UpdateSettingsUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
     /**
-     * Updates the ChirpStack server URL.
+     * Sets the ChirpStack server URL.
      */
-    suspend fun updateChirpStackServerUrl(url: String) {
+    suspend fun setChirpStackServerUrl(url: String) {
         settingsRepository.setChirpStackServerUrl(url)
     }
     
     /**
-     * Updates the ChirpStack API key.
+     * Sets the ChirpStack API key.
      */
-    suspend fun updateChirpStackApiKey(apiKey: String) {
+    suspend fun setChirpStackApiKey(apiKey: String) {
         settingsRepository.setChirpStackApiKey(apiKey)
     }
     
     /**
-     * Updates the device ID.
+     * Sets the device ID.
      */
-    suspend fun updateDeviceId(deviceId: String) {
+    suspend fun setDeviceId(deviceId: String) {
         settingsRepository.setDeviceId(deviceId)
     }
     
     /**
-     * Updates the refresh interval.
+     * Sets the application ID.
      */
-    suspend fun updateRefreshInterval(intervalSeconds: Int) {
+    suspend fun setApplicationId(applicationId: String) {
+        settingsRepository.setApplicationId(applicationId)
+    }
+    
+    /**
+     * Sets the refresh interval in seconds.
+     */
+    suspend fun setRefreshInterval(intervalSeconds: Int) {
         settingsRepository.setRefreshInterval(intervalSeconds)
     }
     
     /**
-     * Updates the device name.
+     * Sets the device name.
      */
-    suspend fun updateDeviceName(name: String) {
+    suspend fun setDeviceName(name: String) {
         settingsRepository.setDeviceName(name)
     }
     
     /**
-     * Updates the Supabase URL.
+     * Sets whether notifications are enabled.
      */
-    suspend fun updateSupabaseUrl(url: String) {
-        settingsRepository.setSupabaseUrl(url)
+    suspend fun setNotificationsEnabled(enabled: Boolean) {
+        settingsRepository.setNotificationsEnabled(enabled)
     }
     
     /**
-     * Updates the Supabase API key.
+     * Sets the alert threshold.
      */
-    suspend fun updateSupabaseApiKey(apiKey: String) {
-        settingsRepository.setSupabaseApiKey(apiKey)
-    }
-    
-    /**
-     * Updates the alert threshold.
-     */
-    suspend fun updateAlertThreshold(threshold: Double) {
+    suspend fun setAlertThreshold(threshold: Double) {
         settingsRepository.setAlertThreshold(threshold)
     }
 } 

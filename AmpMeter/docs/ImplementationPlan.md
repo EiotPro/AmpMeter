@@ -1,237 +1,105 @@
 # AmpMeter Implementation Plan
 
-This document outlines the step-by-step implementation plan for the AmpMeter Android application.
+This document outlines the step-by-step implementation plan for completing the AmpMeter Android application.
 
-## Phase 1: Foundation (Week 1)
+## 1. Project Setup and Configuration
 
-### Project Setup and Configuration
+- [x] Set up project structure following Clean Architecture principles
+- [x] Configure Gradle dependencies
+- [x] Set up Hilt for dependency injection
+- [x] Configure network security
 
-1. **Project Structure Setup**
-   - Create package structure according to Clean Architecture
-   - Configure build.gradle with required dependencies:
-     - Retrofit + OkHttp for networking
-     - Room for local database
-     - Hilt for dependency injection
-     - Supabase client libraries
-     - Coroutines and StateFlow
+## 2. Data Layer Implementation
 
-2. **Dependency Injection Setup**
-   - Configure Hilt Application class
-   - Create DI modules for:
-     - Network module (Retrofit, OkHttp)
-     - Database module (Room)
-     - Repository module
-     - UseCase module
+- [x] Create data models and entities
+- [x] Implement Room database for local storage
+- [x] Create DAOs for database access
+- [x] Implement repository interfaces and implementations
+- [x] Set up DataStore for settings storage
+- [x] Implement ChirpStack API client
 
-3. **Domain Models Definition**
-   - Create business models:
-     - DeviceReading (current, voltage, battery, etc.)
-     - DeviceLog (for historical data)
-     - ConnectionStatus (enum)
-     - Resource<T> (wrapper for data loading states)
+## 3. Domain Layer Implementation
 
-### Data Layer Implementation
+- [x] Define domain models
+- [x] Create use cases for business logic
+- [x] Implement repository interfaces
 
-1. **Room Database Setup**
-   - Define entities:
-     - DeviceReadingEntity
-     - DeviceLogEntity
-   - Create DAOs:
-     - DeviceReadingDao
-     - DeviceLogDao
-   - Set up Room Database class
+## 4. Presentation Layer Implementation
 
-2. **API Interfaces**
-   - ChirpStackApi interface with endpoints
-   - SupabaseApi interface
-   - DTOs for API responses
-   - Network interceptors for authentication
+- [x] Set up navigation components
+- [x] Implement Dashboard UI
+- [x] Create Dashboard ViewModel
+- [x] Implement Settings UI
+- [ ] Complete Settings ViewModel
+- [x] Implement Logs UI
+- [ ] Complete Logs ViewModel
 
-3. **Repository Interfaces and Implementations**
-   - DeviceRepository interface
-   - SettingsRepository interface
-   - Implementations with proper error handling and offline support
+## 5. Features to Complete
 
-## Phase 2: Core Features (Week 2)
+### Dashboard Screen
+- [x] Display current reading with proper formatting
+- [x] Show connection status indicator
+- [x] Implement auto-refresh functionality
+- [x] Add manual refresh via swipe-to-refresh
+- [ ] Add current threshold alerts
 
-### UI Components and Navigation
+### Settings Screen
+- [x] Device configuration (ID, name)
+- [x] ChirpStack server configuration
+- [x] App preferences (refresh interval, notifications)
+- [ ] Implement "Test Connection" functionality
+- [ ] Add validation for inputs
 
-1. **Navigation Setup**
-   - Update mobile_navigation.xml
-   - Rename fragments to match requirements:
-     - HomeFragment → DashboardFragment
-     - DashboardFragment → LogsFragment
-     - NotificationsFragment → SettingsFragment
-
-2. **Basic UI Layout**
-   - Update layouts for fragments
-   - Create custom components:
-     - CurrentDisplayView
-     - ConnectionStatusView
-     - DeviceInfoCardView
-
-3. **ViewModels Implementation**
-   - DashboardViewModel
-   - LogsViewModel
-   - SettingsViewModel
-
-### Core Functionality
-
-1. **ChirpStack Integration**
-   - Implement payload decoder
-   - Add authentication token handling
-   - Create network response handlers
-
-2. **Local Caching Logic**
-   - Implement repository pattern with local-first strategy
-   - Add synchronization mechanisms
-   - Implement offline detection
-
-3. **Settings Storage**
-   - Set up DataStore for app preferences
-   - Create SettingsRepository implementation
-   - Add configuration validation logic
-
-## Phase 3: UI Implementation (Week 3)
-
-### Dashboard Fragment
-
-1. **Current Display**
-   - Implement large current display with unit
-   - Add connection status indicator
-   - Create last updated timestamp with auto-refresh
-
-2. **Device Info Cards**
-   - Voltage reading display
-   - Battery level indicator
-   - Signal strength (RSSI) display
-   - SNR value display
-
-3. **Refresh Functionality**
-   - Implement swipe-to-refresh
-   - Add auto-refresh mechanism
-   - Create loading indicators
-
-### Logs Fragment
-
-1. **RecyclerView Setup**
-   - Create custom adapter for logs
-   - Implement item layout with all required info
-   - Add infinite scrolling
-
-2. **Search and Filter**
-   - Implement search functionality
-   - Add filter options (by date, status)
-   - Create UI for filter controls
-
-3. **Export Feature**
-   - Add export to CSV/JSON functionality
-   - Implement file saving and sharing
-   - Add permission handling
-
-### Settings Fragment
-
-1. **ChirpStack Settings**
-   - Server URL input with validation
-   - API Key secure storage
-   - Device EUI configuration
-
-2. **Supabase Settings**
-   - Project URL configuration
-   - API Key storage
-   - Table name configuration
-
-3. **App Preferences**
-   - Refresh interval selection
-   - Data retention settings
-   - Theme selection
-   - Notification settings
-
-## Phase 4: Advanced Features (Week 4)
+### Logs Screen
+- [x] Display historical readings in a list
+- [ ] Implement pagination for large datasets
+- [ ] Add filtering options
+- [ ] Implement export functionality
 
 ### Supabase Integration
+- [ ] Set up Supabase client
+- [ ] Implement data synchronization
+- [ ] Add offline support with sync indicators
 
-1. **Supabase Client Setup**
-   - Configure Supabase client
-   - Set up table models
-   - Implement authentication if required
+## 6. Testing Plan
 
-2. **Cloud Sync**
-   - Implement data synchronization
-   - Add conflict resolution
-   - Create background sync service
+- [ ] Unit tests for use cases
+- [ ] Unit tests for repositories
+- [ ] UI tests for main screens
+- [ ] Integration tests for API communication
 
-3. **Real-time Updates**
-   - Add Supabase real-time subscriptions
-   - Implement notification for data changes
-   - Create UI updates for real-time data
+## 7. Deployment
 
-### Error Handling and UX Improvements
+- [ ] Configure ProGuard rules
+- [ ] Set up signing configuration
+- [ ] Create release build
+- [ ] Prepare for Play Store submission
 
-1. **Comprehensive Error Handling**
-   - Create error models and handlers
-   - Implement retry mechanisms
-   - Add user-friendly error messages
+## Implementation Timeline
 
-2. **UX Enhancements**
-   - Add loading animations
-   - Implement transitions between states
-   - Create empty state designs
+1. **Week 1**: Complete Settings screen and fix Device ID configuration
+2. **Week 2**: Enhance Logs screen with filtering and export
+3. **Week 3**: Implement Supabase integration and sync
+4. **Week 4**: Testing, bug fixes, and optimization
 
-3. **Battery Optimization**
-   - Implement adaptive refresh intervals
-   - Add background work constraints
-   - Optimize network calls
+## Next Steps
 
-## Phase 5: Testing and Polish (Week 5)
+1. Complete the Settings screen implementation:
+   - Implement the SettingsViewModel
+   - Add validation for input fields
+   - Implement "Test Connection" functionality
 
-### Testing
+2. Enhance the Logs screen:
+   - Complete pagination implementation
+   - Add date range filtering
+   - Implement CSV export functionality
 
-1. **Unit Tests**
-   - Repository tests
-   - ViewModel tests
-   - UseCase tests
+3. Add alert notifications:
+   - Create notification channels
+   - Implement background monitoring service
+   - Add threshold configuration in settings
 
-2. **UI Tests**
-   - Fragment tests
-   - Integration tests
-   - Navigation tests
-
-3. **Performance Tests**
-   - Memory usage
-   - Battery consumption
-   - Network efficiency
-
-### Security and Performance
-
-1. **Security Enhancements**
-   - Secure API key storage
-   - Network security configuration
-   - ProGuard rules
-
-2. **Performance Optimization**
-   - Memory usage optimization
-   - Startup time improvement
-   - UI rendering optimization
-
-3. **Final Polish**
-   - UX review and improvements
-   - Accessibility enhancements
-   - Localization support
-
-## Deliverables
-
-1. **Android Application**
-   - APK file
-   - Source code repository
-   - Release notes
-
-2. **Documentation**
-   - Code documentation
-   - User manual
-   - API documentation
-
-3. **Testing Reports**
-   - Test coverage report
-   - Performance benchmarks
-   - Security audit results 
+4. Implement Supabase integration:
+   - Set up Supabase client
+   - Create sync mechanism
+   - Add conflict resolution logic 

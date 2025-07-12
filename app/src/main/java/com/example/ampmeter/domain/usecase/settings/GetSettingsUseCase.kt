@@ -51,4 +51,11 @@ class GetSettingsUseCase @Inject constructor(
     suspend fun getDeviceName(): String {
         return settingsRepository.getDeviceName()
     }
+    
+    /**
+     * Gets whether notifications are enabled.
+     */
+    suspend fun getNotificationsEnabled(): Boolean {
+        return settingsRepository.getNotificationsEnabled()
+    }
 } 
