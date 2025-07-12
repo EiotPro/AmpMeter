@@ -1,12 +1,16 @@
 package com.example.ampmeter
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.ampmeter.databinding.ActivityMainBinding
+import com.example.ampmeter.presentation.ui.test.PayloadTestActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -28,6 +32,22 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         setupNavigation()
+    }
+    
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+    
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_payload_test -> {
+                // Launch the payload test activity
+                startActivity(Intent(this, PayloadTestActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
     
     private fun setupNavigation() {
