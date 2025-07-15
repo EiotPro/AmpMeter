@@ -66,7 +66,16 @@ object NetworkModule {
         
         // Get server URL from settings, or use default
         val serverUrl = runCatching {
-            kotlinx.coroutines.runBlocking { settingsRepository.getChirpStackServerUrl() }
+            kotlinx.coroutines.runBlocking { 
+                val url = settingsRepository.getChirpStackServerUrl()
+                
+                // Ensure URL has a scheme, add http:// if missing
+                if (url.isNotEmpty() && !url.startsWith("http://") && !url.startsWith("https://")) {
+                    "http://$url"
+                } else {
+                    url
+                }
+            }
         }.getOrDefault(defaultUrl)
         
         return Retrofit.Builder()

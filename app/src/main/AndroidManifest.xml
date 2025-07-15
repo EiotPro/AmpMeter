@@ -28,6 +28,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- Payload Test Activity -->
+        <activity
+            android:name=".presentation.ui.test.PayloadTestActivity"
+            android:exported="false"
+            android:label="Payload Test Tool"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

@@ -135,6 +135,13 @@ class SettingsFragment : Fragment() {
             return
         }
         
+        // Show hint about server URL format, but still allow saving
+        if (serverUrl.isNotEmpty()) {
+            if (serverUrl.startsWith("http://") || serverUrl.startsWith("https://")) {
+                Toast.makeText(requireContext(), "Info: URL scheme will be handled automatically, you can just enter IP:port format", Toast.LENGTH_LONG).show()
+            }
+        }
+        
         viewModel.saveSettings(
             deviceId = deviceId,
             deviceName = deviceName,

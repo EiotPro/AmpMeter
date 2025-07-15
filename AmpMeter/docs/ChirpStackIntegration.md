@@ -88,6 +88,37 @@ data class DownlinkRequest(
 )
 ```
 
+## URL Formatting for ChirpStack API
+
+When connecting to the ChirpStack API, the following URL format requirements must be followed:
+
+1. **User Input Format**: Users can enter the server URL in `IP:port` format (e.g., `103.61.85.75:8082`) in the app's settings.
+
+2. **Required Format for Retrofit**: Internally, the app automatically prepends `http://` to URLs that don't already have a scheme.
+
+3. **Implementation Detail**: This automatic URL formatting is handled in the `NetworkModule.kt` file:
+   ```kotlin
+   val serverUrl = runCatching {
+       kotlinx.coroutines.runBlocking { 
+           val url = settingsRepository.getChirpStackServerUrl()
+           
+           // Ensure URL has a scheme, add http:// if missing
+           if (url.isNotEmpty() && !url.startsWith("http://") && !url.startsWith("https://")) {
+               "http://$url"
+           } else {
+               url
+           }
+       }
+   }.getOrDefault(defaultUrl)
+   ```
+
+4. **Error Handling**: The app includes specific error detection for common URL-related issues:
+   - Invalid URL formats
+   - HTML responses when JSON is expected
+   - Connection failures
+
+> **Note**: Improper URL formatting can result in receiving HTML error responses instead of the expected JSON data from the ChirpStack API.
+
 ### Retrofit Setup with Authentication
 
 ```kotlin

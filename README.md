@@ -1,5 +1,7 @@
 # AmpMeter - LoRaWAN Current Sensor Monitor
 
+
+
 AmpMeter is an Android application designed to monitor current sensor readings from IoT devices using LoRaWAN and ChirpStack. The app provides real-time monitoring, historical data logging, and comprehensive configuration options.
 
 ## Current Status
