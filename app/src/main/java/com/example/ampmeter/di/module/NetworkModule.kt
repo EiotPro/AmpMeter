@@ -1,11 +1,13 @@
 package com.example.ampmeter.di.module
 
+import android.content.Context
 import com.example.ampmeter.BuildConfig
 import com.example.ampmeter.data.remote.api.ChirpStackApi
 import com.example.ampmeter.domain.repository.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,6 +19,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+    
+    @Provides
+    @Singleton
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
     
     @Provides
     @Singleton

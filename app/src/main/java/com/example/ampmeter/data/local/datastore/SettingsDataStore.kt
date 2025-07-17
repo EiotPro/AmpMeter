@@ -94,6 +94,24 @@ class SettingsDataStore @Inject constructor(
     }
     
     /**
+     * Get a float from DataStore.
+     */
+    fun getFloat(key: Preferences.Key<Float>, defaultValue: Float = 0.0f): Flow<Float> {
+        return context.dataStore.data.map { preferences ->
+            preferences[key] ?: defaultValue
+        }
+    }
+    
+    /**
+     * Set a float in DataStore.
+     */
+    suspend fun setFloat(key: Preferences.Key<Float>, value: Float) {
+        context.dataStore.edit { preferences ->
+            preferences[key] = value
+        }
+    }
+    
+    /**
      * Get a string value synchronously (for use in API initialization).
      */
     suspend fun getStringSynchronously(key: Preferences.Key<String>, defaultValue: String = ""): String {

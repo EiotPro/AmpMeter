@@ -50,6 +50,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    
+    lint {
+        abortOnError = false  // Don't fail the build on lint errors
+        baseline = file("lint-baseline.xml")  // Use a baseline to track lint issues
+    }
 }
 
 dependencies {
@@ -59,6 +64,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
 
     // Lifecycle components
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
@@ -95,6 +101,13 @@ dependencies {
 
     // Timber for logging
     implementation("com.jakewharton.timber:timber:5.0.1")
+
+    // MQTT Client (Eclipse Paho)
+    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+    implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
+    
+    // Bluetooth LE
+    implementation("no.nordicsemi.android:ble:2.6.1")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

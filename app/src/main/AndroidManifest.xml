@@ -2,8 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Network Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    
+    <!-- Bluetooth Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" 
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
+    <!-- BLE Feature -->
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
     <application
         android:name=".AmpMeterApplication"
@@ -35,6 +53,13 @@
             android:exported="false"
             android:label="Payload Test Tool"
             android:parentActivityName=".MainActivity" />
+            
+        <!-- MQTT Service -->
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+        
+        <!-- Connectivity Services -->
+        <service android:name=".data.remote.service.MqttClientService" />
+        <service android:name=".data.remote.service.BleClientService" />
     </application>
 
 </manifest>

@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# MQTT Service
+-keep class org.eclipse.paho.client.mqttv3.** { *; }
+-keep class org.eclipse.paho.client.mqttv3.logging.** { *; }
+-keep class org.eclipse.paho.client.mqttv3.internal.** { *; }
+-keep class org.eclipse.paho.client.mqttv3.persist.** { *; }
+-keep class org.eclipse.paho.android.service.** { *; }
+
+# Don't warn about missing classes from the old support library
+-dontwarn android.support.v4.**
